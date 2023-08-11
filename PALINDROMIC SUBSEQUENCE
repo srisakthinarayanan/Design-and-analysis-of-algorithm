@@ -1,0 +1,84 @@
+public class Main {
+    // Declaring the dp table.
+    static int dp[][];
+    // Function to initialize the dp table
+    static void initializeDPTable(int n) {
+        dp = new int[n][n];
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                dp[i][j] = -1;
+    }
+    // Function to find length of LPS
+    private static int LPS(char s[], int low, int high) {
+        // If answer for s[low...high] has already been calculated.
+        if (dp[low][high] != -1)
+            return dp[low][high];
+        int ans = 0;
+        // Base case 1: String of length 1.
+        if (low == high) {
+            ans = 1;
+        }
+        // Base case 2: String of length 2.
+        else if (high - low == 1) {
+            // If both characters are equal
+            if (s[low] == s[high]) {
+                ans = 2;
+            } else {
+                ans = 1;
+            }
+        }
+        // If s[low] and s[high] are equal
+        else if (s[low] == s[high]) {
+            ans = 2 + LPS(s, low + 1, high - 1);
+        }
+        // Otherwise
+        else {
+            int leftLPS = LPS(s, low, high - 1);
+            int rightLPS = LPS(s, low + 1, high);
+            if (leftLPS >= rightLPS) {
+                ans = leftLPS;
+            } else {
+                ans = rightLPS;
+            }
+        }
+        // Store the answer in dp table and return it.
+        dp[low][high] = ans;
+
+        return dp[low][high];
+    }
+
+    // Function to print the longest palindromic subsequence
+    private static void printLPS(char s[], int low, int high, StringBuilder sb) {
+        if (low > high) {
+            return;
+        }
+
+        if (low == high) {
+            sb.append(s[low]);
+            return;
+        }
+
+        if (s[low] == s[high]) {
+            sb.append(s[low]);
+            printLPS(s, low + 1, high - 1, sb);
+            sb.append(s[high]);
+        } else if (dp[low][high - 1] >= dp[low + 1][high]) {
+            printLPS(s, low, high - 1, sb);
+        } else {
+            printLPS(s, low + 1, high, sb);
+        }
+    }
+    // Main function
+    public static void main(String args[]) {
+        // Trying for string "abbab"
+        String s = "sarees";
+        initializeDPTable(s.length());
+        int len = LPS(s.toCharArray(), 0, s.length() - 1);
+        System.out.println("Length of LPS of " + s + " is " + len);
+
+        // Print the longest palindromic subsequence
+        StringBuilder sb = new StringBuilder();
+        printLPS(s.toCharArray(), 0, s.length() - 1, sb);
+        System.out.println("Longest Palindromic Subsequence: " + sb.toString());
+    }
+}
