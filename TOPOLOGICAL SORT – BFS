@@ -1,0 +1,56 @@
+import java.util.*;
+import java.util.Stack;
+class GraphBFS {
+    private int V;
+    private LinkedList<Integer>[] adj;
+    GraphBFS(int v) {
+        V = v;
+        adj = new LinkedList[v];
+        for (int i = 0; i < v; ++i) {
+            adj[i] = new LinkedList();
+        }
+    }
+    void addEdge(int v, int w) {
+        adj[v].add(w);
+    }
+    void topologicalSort() {
+        int[] inDegree = new int[V];
+        for (int i = 0; i < V; ++i) {
+            for (int v : adj[i]) {
+                inDegree[v]++;
+            }
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < V; ++i) {
+            if (inDegree[i] == 0) {
+                queue.offer(i);
+            }
+        }
+        System.out.println("Topological Sorting:");
+        while (!queue.isEmpty()) {
+            int v = queue.poll();
+            System.out.print(v + " ");       
+            for (int neighbor : adj[v]) {
+                if (--inDegree[neighbor] == 0) {
+                    queue.offer(neighbor);
+                }
+            }
+        }
+    }
+    public static void main(String args[]) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the number of vertices: ");
+        int V = scanner.nextInt();
+        GraphBFS g = new GraphBFS(V);
+
+        System.out.print("Enter the number of edges: ");
+        int E = scanner.nextInt();
+        for (int i = 0; i < E; i++) {
+            System.out.print("Enter edge " + (i + 1) + " (source destination): ");
+            int source = scanner.nextInt();
+            int destination = scanner.nextInt();
+            g.addEdge(source, destination);
+        }
+        g.topologicalSort();
+    }
+}
