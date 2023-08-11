@@ -1,0 +1,33 @@
+import java.util.*;
+class Main {
+    public static int longestPalSubstr(String str) {
+        int n = str.length();
+        int maxLength = 1;
+        int start = 0;
+        for (int i = 0; i < str.length(); i++) {
+            for (int j = i; j < str.length(); j++) {
+                int flag = 1;
+
+                for (int k = 0; k < (j - i + 1) / 2; k++) {
+                    if (str.charAt(i + k) != str.charAt(j - k)) {
+                        flag = 0;
+                        break;
+                    }
+                }
+                if (flag != 0 && (j - i + 1) > maxLength) {
+                    start = i;
+                    maxLength = j - i + 1;
+                }
+            }
+        }
+        // Print the palindromic substring(s)
+        String palindromicSubstring = str.substring(start, start + maxLength);
+        System.out.println("\nLongest Palindromic Substring: " + palindromicSubstring);
+        return maxLength;
+    }
+    public static void main(String args[]) {
+        String s = "sister";
+        System.out.println("\nLength of Longest Palindromic Substring: " + longestPalSubstr(s));
+    }
+}
+
